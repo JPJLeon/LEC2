@@ -1,0 +1,32 @@
+---
+title: "Laboratorio 2, Estadistica Computacional"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##I. Integrantes
+  + Daniel Aguila ()
+  + Juan Pablo Leon (201473047-0)
+
+##II. Preguntas
+
+###1.1 Muestreo y Calculo
+**Enunciado:** En el juego de cartas Yu-Gi-Oh! una baraja se compone de 3 tipos de cartas: Monstruo, Magia y Trampa. Se cree que una baraja simple esta balanceada o es consistente si la baraja cumple con tener 40 cartas, de las cuales 20 son monstruos, 10 son magias y 10 son trampas. Se define como consistente a aquella baraja en la que la mano inicial posee un numero balanceado de cartas, en este caso, como minimo 1 carta de cada tipo.
+
+**1.1.1** Si en el primer turno el jugador saca 5 cartas de la baraja (sin reemplazo) ?Cual es la probabilidad de que su mano sea no consistente?
+
+**1.1.2** Si ahora consideramos que el jugador roba (sacar sin reemplazo) una carta en su primer turno, ?Cual es la nueva probabilidad de que la mano no sea consistente?
+
+###1.2 Convergencia
+
+###1.3 Bayes y Geometria
+
+###1.4 Simulacion y Analisis
+
+
+##III. Conclusiones
