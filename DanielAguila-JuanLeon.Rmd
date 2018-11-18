@@ -1,8 +1,9 @@
 ---
 title: "Laboratorio 2, Estadistica Computacional"
 output:
-  pdf_document: default
   html_document: default
+  word_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -10,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ##I. Integrantes
-  + Daniel Aguila ()
+  + Daniel Aguila (201473106-k)
   + Juan Pablo Leon (201473047-0)
 
 ##II. Preguntas
@@ -20,13 +21,406 @@ knitr::opts_chunk$set(echo = TRUE)
 
 **1.1.1** Si en el primer turno el jugador saca 5 cartas de la baraja (sin reemplazo) ?Cual es la probabilidad de que su mano sea no consistente?
 
-**1.1.2** Si ahora consideramos que el jugador roba (sacar sin reemplazo) una carta en su primer turno, ?Cual es la nueva probabilidad de que la mano no sea consistente?
+**1.1.2** Si ahora consideramos que el jugador roba (sacar sin reemplazo) una carta en su primer turno, ¿Cual es la nueva probabilidad de que la mano no sea consistente?
 
 ###1.2 Convergencia
+```{r}
+#Pregunta 1.2.1
+library(ggplot2)
+
+probabilidadRobarMonstruo <- function (repeticiones){
+  mazo <- c("MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO",
+            "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO",
+            "MA", "MA", "MA", "MA", "MA", "MA", "MA", "MA", "MA", "MA",
+            "T", "T", "T", "T", "T", "T", "T", "T", "T", "T")
+  probabilidades <- c()
+  cantidadMonstruos <- 0.0
+  
+  for(r in 1:repeticiones){
+    for(i in 1:r){
+      indice <- sample(1:length(mazo), 1)
+      if("MO" %in% mazo[indice]){
+        cantidadMonstruos <- cantidadMonstruos + 1
+      }
+    }
+    probabilidades <- c(probabilidades, cantidadMonstruos/r)
+    cantidadMonstruos <- 0.0
+  }
+  return(probabilidades)
+}
+ 
+probs <- probabilidadRobarMonstruo(500)
+indice <- seq(1, 500, 1)
+
+datos <- data.frame(indice,probs)
+ 
+
+
+
+# Basic scatter plot
+ggplot(datos, aes(x=indice, y=probs)) + 
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE) +
+  labs(title="Probabilidad de Robar un Carta de Monstruo",
+        x="Cantidad de Pruebas", y = "Probabilidad Obtenida")
+```
+
+```{r}
+#Pregunta 1.2.2
+
+library(ggplot2)
+
+probabilidadRobar5Monstruos <- function (repeticiones){
+  mazo <- c("MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO",
+            "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO",
+            "MA", "MA", "MA", "MA", "MA", "MA", "MA", "MA", "MA", "MA",
+            "T", "T", "T", "T", "T", "T", "T", "T", "T", "T")
+  probabilidades <- c()
+  
+  for(r in seq(1, repeticiones, 5)){
+    cantidadManos5Monstruos <- 0.0
+    mazoTemporal <- mazo
+    
+    for(i in 1:r){
+      cantidadMonstruos <- 0.0
+      for(j in 1:5){
+        indice <- sample(1:length(mazo), 1)
+        if("MO" %in% mazo[indice]){
+          cantidadMonstruos <- cantidadMonstruos + 1
+        }
+        mazoTemporal <- mazoTemporal[-indice]
+      }
+      
+      if(cantidadMonstruos == 5.0){
+        cantidadManos5Monstruos <- cantidadManos5Monstruos + 1
+      }
+    }
+    probabilidades <- c(probabilidades, cantidadManos5Monstruos/r)
+  }
+  return(probabilidades)
+}
+
+probs <- probabilidadRobar5Monstruos(1000)
+indice <- seq(1, 1000, 5)
+
+datos <- data.frame(indice,probs)
+
+
+
+
+# Basic scatter plot
+ggplot(datos, aes(x=indice, y=probs)) + 
+  geom_point() +
+  geom_smooth(method=lm, se=FALSE) +
+  labs(title="Probabilidad de Robar 5 cartas de Monstruo",
+       x="Cantidad de Pruebas", y = "Probabilidad Obtenida") +
+  annotate("text", x = 875, y = 0.075, label = "Probabilidad Teorica = 0.02356202")
+
+
+
+```
+
 
 ###1.3 Bayes y Geometria
+```{r}
+#Funciones para preguntas 1.3.-
+
+#centro en 0.0, eje 'X' crece hacia la derecha y eje 'Y'hacia arriba
+
+#cada funcion entrega una lista con las distancias que existieron entre
+#los tiros hechos y el centro del blanco (0,0)
+
+disparoRifle <- function (numeroDisparos){
+  coordenadasX <- runif(numeroDisparos, -4.0, 4.0)
+  coordenadasY <- runif(numeroDisparos, -4.0, 4.0)
+  
+  distancias <- round( (coordenadasX**2 + coordenadasY**2)**0.5 , 3)
+  
+  return(distancias)
+}
+
+disparoArco <- function (numeroDisparos){
+  coordenadasX <- runif(numeroDisparos, -5.0, 7.0)  
+  coordenadasY <- runif(numeroDisparos, -6.0, 6.0) 
+  
+  distancias <- round( (coordenadasX**2 + coordenadasY**2)**0.5 , 3)
+  
+  return(distancias)
+}
+
+disparoSling <- function (numeroDisparos){
+  coordenadasX <- runif(numeroDisparos, -10.0, 10.0)  
+  coordenadasY <- runif(numeroDisparos, -10.0, 10.0) 
+  
+  distancias <- round( (coordenadasX**2 + coordenadasY**2)**0.5 , 3)
+  
+  return(distancias)
+}
+
+disparoBallesta <- function (numeroDisparos){
+  coordenadasX <- runif(numeroDisparos, -5.0, 5.0)  
+  coordenadasY <- runif(numeroDisparos, -3.0, 7.0) 
+  
+  distancias <- round( (coordenadasX**2 + coordenadasY**2)**0.5 , 3)
+  
+  return(distancias)
+}
+
+
+```
+
+```{r}
+#Pregunta 1.3.1
+
+obtenerMuestra <- function (numeroDisparos) {
+  muestra <- c()
+  
+  for(i in 1:numeroDisparos){
+    resultadoDado <- sample(1:6, 1)
+    
+    if(resultadoDado == 1){
+      muestra <- rbind(muestra, c("Rifle", disparoRifle(1)))
+    } else if(resultadoDado == 2){
+      muestra <- rbind(muestra, c("Arco", disparoArco(1)))
+    } else if(resultadoDado >= 3 & resultadoDado <= 5){
+      muestra <- rbind(muestra, c("Slingshot", disparoSling(1)))
+    } else if(resultadoDado == 6){
+      muestra <- rbind(muestra, c("Ballesta", disparoBallesta(1)))
+    }
+  }
+  
+  datos <- data.frame(muestra)
+  colnames(datos) <- c("Tipo de Disparo", "Distancia al Centro")
+  return(datos)
+}
+
+muestra1000 <- obtenerMuestra(1000)
+```
+
+```{r}
+#Pregunta 1.3.2
+#muestra1000 con los 1000 datos a usar
+library(ggplot2)
+
+datosRifle <- muestra1000 [which(muestra1000$"Tipo de Disparo" == "Rifle"),]
+tirosAcertadosRifle <- datosRifle[which(as.numeric(as.character(datosRifle$`Distancia al Centro`)) <= 1), ]
+
+cantidadAciertosRifle <- nrow(tirosAcertadosRifle)
+cantidadTotalRifle <- nrow(datosRifle) - cantidadAciertosRifle
+
+probabilidadAciertoRifle <- cantidadAciertosRifle/cantidadTotalRifle
+
+probabilidadAciertoRifle
+```
+
+```{r}
+#Pregunta 1.3.3
+#muestra1000 con los 1000 datos a usar
+
+datosDisparosAcertados <- muestra1000 [which(as.numeric(as.character(muestra1000$`Distancia al Centro`)) <= 1), ]
+cantidadDeDisparosAcertados <- nrow(datosDisparosAcertados)
+
+cantidadDeSlingshotsAcertados <- nrow(
+  datosDisparosAcertados [which(datosDisparosAcertados$`Tipo de Disparo` == "Slingshot"),]
+)
+
+#Probabilidad de que el tipo de tiro sea Slingshot si el disparo fue acertado
+probabilidadCondicionada <- cantidadDeSlingshotsAcertados/cantidadDeDisparosAcertados
+probabilidadCondicionada
+```
+
+```{r}
+#Pregunta 1.3.4
+#muestra1000 con los 1000 datos a usar
+
+datosDisparosFallidos <- muestra1000 [which(as.numeric(as.character(muestra1000$`Distancia al Centro`)) > 1), ]
+cantidadDeDisparosFallidos <- nrow(datosDisparosFallidos)
+
+cantidadDeArcosFallidos <- nrow(
+  datosDisparosFallidos [which(datosDisparosFallidos$`Tipo de Disparo` == "Arco"),]
+)
+
+#Probabilidad de que el tipo de tiro sea Arco si el disparo fue fallido
+probabilidadCondicionada <- cantidadDeArcosFallidos/cantidadDeDisparosFallidos
+probabilidadCondicionada
+```
+
+```{r}
+#Pregunta 1.3.5
+#muestra1000 con los 1000 datos a usar
+
+datosDisparosSinRifle <- muestra1000 [which(muestra1000$'Tipo de Disparo' != "Rifle"), ]
+cantidadDeDisparos <- nrow(datosDisparosSinRifle)
+
+cantidadDeDisparosAcertados <- nrow(datosDisparosSinRifle [which(as.numeric(as.character(datosDisparosSinRifle$'Distancia al Centro')) <= 1), ])
+
+#Probabilidad de que el tiro sea acertado si no se utilizan armas de fuego
+probabilidadCondicionada <- cantidadDeDisparosAcertados/cantidadDeDisparos
+probabilidadCondicionada
+
+
+
+```
+
+
+
+
 
 ###1.4 Simulacion y Analisis
+**Enunciado:** En el juego DOTA 2 existe un personaje particular llamado Phantom Assassin, el cual es el terror de los enemigos dado que este heroe y las probabilidades parecen llevarse muy bien.
+
+  En cada uno de los siguientes tres casos se simularon 1000 batallas entre Phantom Assassins (vida: 1500, ataque: 122) y un oponente con el triple de atributos (vida: 4500, ataque: 366), con la diferecia que en cada caso Phantom tendra ambas habilidades disponibles o alguna de estas dehabilitada.
+```{r}
+library("knitr")
+#             NOMBRE,            VIDA,   ATAQUE
+phantom <- c('Phantom Assassins', 1500,  122)
+oponente <- c('El Otro', 4500,  366)
 
 
+
+
+batalla <- function(jug1, jug2, blurHab, cgHab){
+  blur <- c("B","B","B","NB")
+  coupGrace <- c("NCG","NCG","NCG","NCG","CG")
+  finish <- TRUE
+  while(finish){
+    bl <- sample(blur,1,replace=FALSE)
+    cg <- sample(coupGrace, 1, replace=FALSE)
+    #ATACANDO
+    if(blurHab == TRUE){
+      if(bl == 'NB'){
+        jug1[2] <- as.integer(jug1[2]) - as.integer(jug2[3])
+      }
+    }
+    else{
+      jug1[2] <- as.integer(jug1[2]) - as.integer(jug2[3])
+    }
+    if(cg == "CG" & cgHab==TRUE){
+      jug2[2] <- as.integer(jug2[2]) - (as.integer(jug1[3])*4.5)
+    }
+    else{
+      jug2[2] <- as.integer(jug2[2]) - as.integer(jug1[3])
+    }
+    
+    if(jug1[2] < 0 & jug2[2] < 0){
+      finish <- FALSE
+      return("empate")
+    }
+    else if(jug2[2] < 0){
+      finish <- FALSE
+      return("phantom")
+    }
+    else if(jug1[2] < 0){
+      finish <- FALSE
+      return("other")
+    }
+  }
+}
+
+```
+**1.4.1**
+  En la primera ronda de batallas se pondrá a prueba la efectividad de ambas habilidades juntas. Al parecer las habilidades extra de Phantom son parcialmente efectivas considerando que se está batallando contra un oponente con mucho mas ataque y vida, por lo que, en un encuentro con un contrincante con atributos similares a él, Phantom sería muy superior sino imposible de vencer.
+  
+```{r}
+win_p <- 0
+win_o <- 0
+win_draw <- 0
+for(i in 1:1000){
+  battle <- batalla(phantom, oponente, blurHab=TRUE, cgHab=TRUE)
+  if(battle == "phantom"){
+    win_p <- win_p + 1
+  } 
+  else if(battle == "other"){
+    win_o <- win_o + 1
+  }
+  else{
+    win_draw <- win_draw + 1
+  }
+}
+
+print("Resultados:");
+print(paste("Victorias:", win_p   , sep=" ") );
+print(paste("Empates:"  , win_o   , sep=" ") );
+print(paste("Derrotas:" , win_draw, sep=" ") );
+```
+  
+**1.4.2**
+ En el segundo caso Phantom se encuentra solo con la habilidad coupGrace. En esta situación vemos que la inhabilitar Blur las probabilidades de Phantom para ganar disminuyen considerablemente (prácticamente nulas). Esto posiblemente se debe a que la probabilidad de utilizar la habilidad coupGrace es baja (20%) y los ataques normales de Phantom son notablemente inferiores a los del oponente, en otras palabras, en cada turno el oponente tiene 80% de probabilidad de atacar el triple.    
+```{r}
+win_p2 <- 0
+win_o2 <- 0
+win_draw2 <- 0
+for(i in 1:1000){
+  battle <- batalla(phantom, oponente, blurHab=FALSE, cgHab=TRUE)
+  if(battle == "phantom"){
+    win_p2 <- win_p2 + 1
+  } 
+  else if(battle == "other"){
+    win_o2 <- win_o2 + 1
+  }
+  else{
+    win_draw2 <- win_draw2 + 1
+  }
+}
+
+
+print("Resultados:");
+print(paste("Victorias:", win_p2   , sep=" "));
+print(paste("Empates:"  , win_o2   , sep=" "));
+print(paste("Derrotas:" , win_draw2, sep=" "));
+```
+  
+**1.4.3**
+  En el último caso se dispone solo de la habilidad Blur. Podemos ver que en este caso Blur si resulto un poco más efectiva que coupGrace, llegando a ganar entre el 0,020% y 0,03% de los casos aproximadamente, esto es favorable considerando los atributos del oponente. Además tener en cuenta que para un oponente solo con el triple de vida, pero el mismo ataque resulta se obtiene aproximadamente un 90% de efectividad. 
+  
+```{r}
+win_p3 <- 0
+win_o3 <- 0
+win_draw3 <- 0
+for(i in 1:1000){
+  battle <- batalla(phantom, oponente, blurHab=TRUE, cgHab=FALSE)
+  if(battle == "phantom"){
+    win_p3 <- win_p3 + 1
+  } 
+  else if(battle == "other"){
+    win_o3 <- win_o3 + 1
+  }
+  else{
+    win_draw3 <- win_draw3 + 1
+  }
+}
+
+
+print("Resultados:
+      ");
+print(paste("Victorias:", win_p3 , sep=" "));
+print(paste("Empates:"  , win_o3   , sep=" "));
+print(paste("Derrotas:" , win_draw3, sep=" "));
+```
+  
+  
+**1.4.4**
+Finalmente se agrupan en la siguiente tabla:
+```{r}
+m2 <- cbind(
+        Victorias = c(win_p,win_p2,win_p3),
+        Empates = c(win_draw,win_draw2,win_draw3),
+        Derrotas =  c(win_o, win_o2, win_o3)
+        )
+
+rownames(m2) <- c("Blur + Coup Grace","Coup Grace","Blur")
+
+kable(m2,caption="Resultados")
+```
+
+Si consideramos la clara desventaja en ataque y vida del contrincante es resaltable que:
+
+1.  Con ambas habilidades Phantom pueda llegar a ganar practicamente 30% de las batallas.
+  
+2.  Coup Grace por si sola no es para nada efectiva, tiene lógica si el ataque del oponente supera con creces al nuestro, pues hay baja probabilidad de usar la habilidad. 
+
+3.  La habilidad Blur a pesar de la desventaja logra obtener victorias aunque sean muy pocas en relación al total.
+
+Finalmente se puede concluir que Blur es la habilidad más efectiva para evitar ser derrotado, aunque es innegable el potencial de ambas juntas.
+  
 ##III. Conclusiones

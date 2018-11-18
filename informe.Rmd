@@ -1,0 +1,19 @@
+---
+title: "Laboratorio 1, Estadística Computacional"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##I. Integrantes
+  + Juan Pablo León (201473047-0)
+  + Daniel Águila (201473106-k)
+
+## II. Preguntas
+###Pregunta 1
