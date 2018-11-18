@@ -21,3 +21,5 @@ obtenerMuestra <- function (numeroDisparos) {
   colnames(datos) <- c("Tipo de Disparo", "Distancia al Centro")
   return(datos)
 }
+
+muestra1000 <- obtenerMuestra(1000)
