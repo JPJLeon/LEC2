@@ -318,6 +318,9 @@ batalla <- function(jug1, jug2, blurHab, cgHab){
 }
 
 ```
+
+Se ha creado una función Batalla la cual simula una tomando en cuenta las probabilidades de 20% y 75% para las habilidades Blur y Coup de Grace, retornando un texto correspondiente al ganador y "empate". Además, toma como parámetros ambos héroes y dos booleanos que determinan la disponibilidad de las habilidades..
+
 **1.4.1**
   En la primera ronda de batallas se pondrá a prueba la efectividad de ambas habilidades juntas. Al parecer las habilidades extra de Phantom son parcialmente efectivas considerando que se está batallando contra un oponente con mucho mas ataque y vida, por lo que, en un encuentro con un contrincante con atributos similares a él, Phantom sería muy superior sino imposible de vencer.
   
@@ -415,12 +418,13 @@ kable(m2,caption="Resultados")
 
 Si consideramos la clara desventaja en ataque y vida del contrincante es resaltable que:
 
-1.  Con ambas habilidades Phantom pueda llegar a ganar practicamente 30% de las batallas.
+1.  Con ambas habilidades Phantom pueda llegar a ganar prácticamente 30% de las batallas.
   
-2.  Coup Grace por si sola no es para nada efectiva, tiene lógica si el ataque del oponente supera con creces al nuestro, pues hay baja probabilidad de usar la habilidad. 
+2.  Coup Grace por sí sola no es para nada efectiva, tiene lógica si el ataque del oponente supera con creces al nuestro, pues hay baja probabilidad de usar la habilidad. 
 
-3.  La habilidad Blur a pesar de la desventaja logra obtener victorias aunque sean muy pocas en relación al total.
+3.  La habilidad Blur a pesar de la desventaja logra obtener victorias, aunque sean muy pocas en relación al total.
 
 Finalmente se puede concluir que Blur es la habilidad más efectiva para evitar ser derrotado, aunque es innegable el potencial de ambas juntas.
+
   
 ##III. Conclusiones
