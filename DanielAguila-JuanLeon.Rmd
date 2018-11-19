@@ -157,15 +157,15 @@ probabilidadEstrategiaCompetitiva(5, 10000)
 
 
 ###1.2 Convergencia
-**Enunciado:**La teoría nos dice que al tener más datos, las buenas estadísticas sobre los datos suelen ser más precisas
-y acercase al valor real de los datos. Un ejemplo de esto es el promedio, el cual al tener más datos, converge
+**Enunciado:**La teoria nos dice que al tener mas datos, las buenas estadisticas sobre los datos suelen ser mas precisas
+y acercase al valor real de los datos. Un ejemplo de esto es el promedio, el cual al tener mas datos, converge
 al valor real de los datos. Considerando la **baraja simple** del ejercicio anterior, sabemos que si obtenemos
 una carta, las probabilidades de que esta carta sea una magia es de 0,25.
 
 Muestre como converge la probabilidad de obtener una carta de monstruo al aumentar el tamaño de
-las muestras con un gráfico. ¿Converge al valor teórico?
+las muestras con un grafico. ¿Converge al valor teorico?
 Muestre como converge la probabilidad de obtener una mano inicial (5 cartas) con 5 monstruos. Muestre
-en el gráfico el valor teórico de esta situación. ¿Es correcta la convergencia mostrada en el gráfico?
+en el grafico el valor teorico de esta situacion. ¿Es correcta la convergencia mostrada en el grafico?
 ```{r}
 #Pregunta 1.2.1
 library(ggplot2)
@@ -264,18 +264,18 @@ ggplot(datos, aes(x=indice, y=probs)) +
 
 
 ###1.3 Bayes y Geometria
-**Enunciado:**Considere que un grupo de amigos se reúnen a jugar tiro al blanco, cada uno con un arma distinta. Utilizan un dado de 4 caras para elegir quien realizará el siguiente disparo.
+**Enunciado:**Considere que un grupo de amigos se reunen a jugar tiro al blanco, cada uno con un arma distinta. Utilizan un dado de 4 caras para elegir quien realizara el siguiente disparo.
 
-  Si el dado entrega como valor 1, es turno del jugador con un rifle. El es el que tiene mayor precisión, logrando obtener todos sus disparos centrados en el objetivo y con un radio de dispersión de 4 [cm].
+  Si el dado entrega como valor 1, es turno del jugador con un rifle. El es el que tiene mayor precision, logrando obtener todos sus disparos centrados en el objetivo y con un radio de dispersion de 4 [cm].
 **Hint: Circulo centrado en 0,0 con radio 4.**
 
-1.  Si el dado entrega 2, es turno del jugador con un arco y flechas. El tiene problemas ajustando sus disparos por culpa del viento, lo que hace que sus disparos estén corridos 1[cm] a la derecha del centro con radio 6[cm].
+1.  Si el dado entrega 2, es turno del jugador con un arco y flechas. El tiene problemas ajustando sus disparos por culpa del viento, lo que hace que sus disparos esten corridos 1[cm] a la derecha del centro con radio 6[cm].
 
 2.  Si el dado entrega 3, es turno del jugador con un slingshot. El dispara de forma centrada, pero con un radio de 10 [cm].
 
 3.  Si el dado entrega 4, es turno del jugador con una ballesta. El dispara 2[cm] arriba del centro con un radio de 5[cm].
 
-  El jugador con el slingshot siente que va a perder el juego, por lo que altera el dado para poder realizar más lanzamientos y tener más oportunidades de acertar al blanco, logrando realizar la mitad de los lanzamientos, y dejando el resto de lanzamientos para el resto de jugadores con igual probabilidad. Responder los siguientes
+  El jugador con el slingshot siente que va a perder el juego, por lo que altera el dado para poder realizar mas lanzamientos y tener mas oportunidades de acertar al blanco, logrando realizar la mitad de los lanzamientos, y dejando el resto de lanzamientos para el resto de jugadores con igual probabilidad. Responder los siguientes
 requerimientos:
 ```{r}
 #Funciones para preguntas 1.3.-
@@ -353,7 +353,7 @@ obtenerMuestra <- function (numeroDisparos) {
 
 muestra1000 <- obtenerMuestra(1000)
 ```
-En el código anterior se utiliza una función que simula una muestra con una determinada cantidad de disparos (en este caso mil) y retorna un frame que muestra cada uno de los disparos enumerados, el tipo de arma y la distancia que tuvo el disparo del centro.
+En el codigo anterior se utiliza una funcion que simula una muestra con una determinada cantidad de disparos (en este caso mil) y retorna un frame que muestra cada uno de los disparos enumerados, el tipo de arma y la distancia que tuvo el disparo del centro.
 
 
 ¿Cual es la probabilidad de que un disparo caiga de en el blanco (circulo centrado en 0,0 con radio 1[cm]) dado que el disparo fue hecho por el jugador con el rifle? 
@@ -376,9 +376,12 @@ probabilidadAciertoRifle <- cantidadAciertosRifle/cantidadTotalRifle
 
 probabilidadAciertoRifle
 ```
+La probabilidad se obtuvo de una muestra de 1000 disparos, analizando solo aquellos que tuvieran como tipo de disparo "Rifle" 
+y un radio menor o igual a 1 luego el calculo de la probabilidad resulta de la cantidad de aciertos (con radio menor o igual a 1) y los disparos totales hechos con rifle.
 
+ 
 ¿Cual es la probabilidad de que el disparo fuera hecho por el jugador con slingshot dado que el disparo
-acertó en el blanco?
+acerto en el blanco?
 
 
 ```{r}
@@ -396,6 +399,9 @@ cantidadDeSlingshotsAcertados <- nrow(
 probabilidadCondicionada <- cantidadDeSlingshotsAcertados/cantidadDeDisparosAcertados
 probabilidadCondicionada
 ```
+Se calcula esta vez de la cantidad de slingshot acertados sobre la cantidad de disparos acertados (sin importar de que arma) 
+de esta forma tenemos la probabilidad que un disparo que haya dado en el blanco haya venido de un slingshot. 
+
 ¿Cual es la probabilidad de que el disparo fuera hecho por el jugador con arco y flechas dado que el
 disparo fallo?
 ```{r}
@@ -413,6 +419,9 @@ cantidadDeArcosFallidos <- nrow(
 probabilidadCondicionada <- cantidadDeArcosFallidos/cantidadDeDisparosFallidos
 probabilidadCondicionada
 ```
+Se obtiene practicamente igual que el anterior solo que ahora buscamos los casos fallidos, pero la idea es la misma se calcula de la division de los disparos con arco fallidos y la cantidad de disparos totales, asi obtenemos la probabilidad que un disparo fallido venga de un arco o incluso la proporcion de los disparos fallidos con arco sobre la totalidad de estos. 
+
+
 ¿Cual es la probabilidad de acertar un disparo dado que no se usa un arma de fuego?
 ```{r}
 #Pregunta 1.3.5
@@ -428,18 +437,20 @@ probabilidadCondicionada <- cantidadDeDisparosAcertados/cantidadDeDisparos
 probabilidadCondicionada
 ```
 
+Nuevamente se realiza una muestra y se filtran solo aquellos disparos que no vengan de un rifle (unica arma de fuego), de esta muestra se obtienen los aciertos y la probabilidad viene dada por los aciertos sin arma de fuego y la cantidad total de aciertos (sin arma de fuego).
+
 
 
 
 
 ###1.4 Simulacion y Analisis
-**Enunciado:** En el juego DOTA 2 existe un personaje particular llamado Phantom Assassin, el cual es el terror de los enemigos dado que este héroe y las probabilidades parecen llevarse muy bien. De forma simple, este personaje posee 2 habilidades relacionadas a probabilidades, estas son:
+**Enunciado:** En el juego DOTA 2 existe un personaje particular llamado Phantom Assassin, el cual es el terror de los enemigos dado que este heroe y las probabilidades parecen llevarse muy bien. De forma simple, este personaje posee 2 habilidades relacionadas a probabilidades, estas son:
 
-1.  Blur: Permite evadir un ataque oponente. La probabilidad de evasión en máximo nivel es 0.75.
+1.  Blur: Permite evadir un ataque oponente. La probabilidad de evasion en maximo nivel es 0.75.
 
-2.  Coup de Grace: Daño masivo (450 % del original) en un ataque. La probabilidad de obtener golpe critico es 0.2 en máximo nivel.
+2.  Coup de Grace: Daño masivo (450 % del original) en un ataque. La probabilidad de obtener golpe critico es 0.2 en maximo nivel.
 
-Simplificando el problema, este héroe tiene 1500 puntos de vida y 122 puntos de daño en máximo nivel.
+Simplificando el problema, este heroe tiene 1500 puntos de vida y 122 puntos de daño en maximo nivel.
 
   En cada uno de los siguientes tres casos se simularon 1000 batallas entre Phantom Assassins (vida: 1500, ataque: 122) y un oponente con el triple de atributos (vida: 4500, ataque: 366), con la diferecia que en cada caso Phantom tendra ambas habilidades disponibles o alguna de estas dehabilitada.
 ```{r}
@@ -491,10 +502,10 @@ batalla <- function(jug1, jug2, blurHab, cgHab){
 
 ```
 
-Se ha creado una función Batalla la cual simula una tomando en cuenta las probabilidades de 20% y 75% para las habilidades Blur y Coup de Grace, retornando un texto correspondiente al ganador o "empate". Además, toma como parámetros ambos héroes y dos booleanos que determinan la disponibilidad de las habilidades.
+Se ha creado una funcion Batalla la cual simula una tomando en cuenta las probabilidades de 20% y 75% para las habilidades Blur y Coup de Grace, retornando un texto correspondiente al ganador o "empate". Ademas, toma como parametros ambos heroes y dos booleanos que determinan la disponibilidad de las habilidades.
 
 **1.4.1**
-  En la primera ronda de batallas se pondrá a prueba la efectividad de ambas habilidades juntas. Al parecer las habilidades extra de Phantom son parcialmente efectivas considerando que se está batallando contra un oponente con mucho mas ataque y vida, por lo que, en un encuentro con un contrincante con atributos similares a él, Phantom sería muy superior sino imposible de vencer.
+  En la primera ronda de batallas se pondra a prueba la efectividad de ambas habilidades juntas. Al parecer las habilidades extra de Phantom son parcialmente efectivas considerando que se esta batallando contra un oponente con mucho mas ataque y vida, por lo que, en un encuentro con un contrincante con atributos similares a el, Phantom seria muy superior sino imposible de vencer.
   
 ```{r}
 win_p <- 0
@@ -520,7 +531,7 @@ print(paste("Derrotas:" , win_draw, sep=" ") );
 ```
   
 **1.4.2**
- En el segundo caso Phantom se encuentra solo con la habilidad coupGrace. En esta situación vemos que la inhabilitar Blur las probabilidades de Phantom para ganar disminuyen considerablemente (prácticamente nulas). Esto posiblemente se debe a que la probabilidad de utilizar la habilidad coupGrace es baja (20%) y los ataques normales de Phantom son notablemente inferiores a los del oponente, en otras palabras, en cada turno el oponente tiene 80% de probabilidad de atacar el triple.    
+ En el segundo caso Phantom se encuentra solo con la habilidad coupGrace. En esta situacion vemos que la inhabilitar Blur las probabilidades de Phantom para ganar disminuyen considerablemente (practicamente nulas). Esto posiblemente se debe a que la probabilidad de utilizar la habilidad coupGrace es baja (20%) y los ataques normales de Phantom son notablemente inferiores a los del oponente, en otras palabras, en cada turno el oponente tiene 80% de probabilidad de atacar el triple.    
 ```{r}
 win_p2 <- 0
 win_o2 <- 0
@@ -546,7 +557,7 @@ print(paste("Derrotas:" , win_draw2, sep=" "));
 ```
   
 **1.4.3**
-  En el último caso se dispone solo de la habilidad Blur. Podemos ver que en este caso Blur si resulto un poco más efectiva que coupGrace, llegando a ganar entre el 0,020% y 0,03% de los casos aproximadamente, esto es favorable considerando los atributos del oponente. Además tener en cuenta que para un oponente solo con el triple de vida, pero el mismo ataque resulta se obtiene aproximadamente un 90% de efectividad. 
+  En el ultimo caso se dispone solo de la habilidad Blur. Podemos ver que en este caso Blur si resulto un poco mas efectiva que coupGrace, llegando a ganar entre el 0,020% y 0,03% de los casos aproximadamente, esto es favorable considerando los atributos del oponente. Ademas tener en cuenta que para un oponente solo con el triple de vida, pero el mismo ataque resulta se obtiene aproximadamente un 90% de efectividad. 
   
 ```{r}
 win_p3 <- 0
@@ -590,18 +601,18 @@ kable(m2,caption="Resultados")
 
 Si consideramos la clara desventaja en atributos con el contrincante es resaltable que:
 
-1.  Con ambas habilidades Phantom pueda llegar a ganar prácticamente 30% de las batallas.
+1.  Con ambas habilidades Phantom pueda llegar a ganar practicamente 30% de las batallas.
   
-2.  Coup Grace por sí sola no es para nada efectiva, tiene lógica si el ataque del oponente supera con creces al nuestro, pues hay baja probabilidad de usar la habilidad. 
+2.  Coup Grace por si sola no es para nada efectiva, tiene logica si el ataque del oponente supera con creces al nuestro, pues hay baja probabilidad de usar la habilidad. 
 
-3.  La habilidad Blur a pesar de la desventaja logra obtener victorias, aunque sean muy pocas en relación al total.
+3.  La habilidad Blur a pesar de la desventaja logra obtener victorias, aunque sean muy pocas en relacion al total.
 
-Finalmente se puede concluir que Blur es la habilidad más efectiva para evitar ser derrotado, aunque es innegable el potencial de ambas juntas.
+Finalmente se puede concluir que Blur es la habilidad mas efectiva para evitar ser derrotado, aunque es innegable el potencial de ambas juntas.
 
   
 ##III. Conclusiones
 
-Simulación y Analisis:
+Simulacion y Analisis:
   R es muy util a la hora de realizar simulaciones y para recolectar datos, es posible ejecutar el mismo experimento muchas veces y obtener datos estadisticos de los casos resultantes.
   
   
