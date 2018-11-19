@@ -21,7 +21,140 @@ knitr::opts_chunk$set(echo = TRUE)
 
 **1.1.1** Si en el primer turno el jugador saca 5 cartas de la baraja (sin reemplazo) ?Cual es la probabilidad de que su mano sea no consistente?
 
+```{r}
+probabilidadNoConsistente <- function (tamanhoMano, repeticiones){
+  mazo <- c("MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO",
+            "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO",
+            "MA", "MA", "MA", "MA", "MA", "MA", "MA", "MA", "MA", "MA",
+            "T", "T", "T", "T", "T", "T", "T", "T", "T", "T")
+  
+  cantidadManosConsistentes <- 0.0
+  
+  for(r in 1:repeticiones){
+    mazoTemporal <- mazo
+    manoTemporal <- c()
+    
+    for(i in 1:tamanhoMano){
+      indice <- sample(1:length(mazoTemporal), 1)
+      manoTemporal <- c(manoTemporal, mazoTemporal[indice])
+      mazoTemporal <- mazoTemporal[-indice]
+      
+    }
+    
+    if( "MO" %in% manoTemporal & "MA" %in% manoTemporal & "T" %in% manoTemporal){
+      cantidadManosConsistentes <- cantidadManosConsistentes + 1
+    }
+  }
+  
+  return(1 - cantidadManosConsistentes/repeticiones)
+}
+  
+probabilidadNoConsistente(5, 10000)
+```
+
+
 **1.1.2** Si ahora consideramos que el jugador roba (sacar sin reemplazo) una carta en su primer turno, ¿Cual es la nueva probabilidad de que la mano no sea consistente?
+
+```{r}
+probabilidadNoConsistente(6, 10000)
+```
+
+
+**1.1.3** En el juego, el jugador obtiene una mano inicial de 5 cartas y ademas roba al comienzo de cada turno (incluyendo el primero) 1 carta extra. El jugador cree tener muchos monstruos en su baraja, por lo que cambia 5 de estos por trampas, con la idea de poder defenderse con estas trampas por los primeros 2 turnos hasta obtener un monstruo. ?Cual es la probabilidad de que se cumpla esta estrategia del jugador? esto es, obtener 2 de estas trampas nuevas en la mano original o en los 2 robos consecutivos y luego obtener un monstruo en el tercer robo.
+
+```{r}
+probabilidadEstrategia <- function (tamanhoMano, repeticiones){
+  mazo <- c("TN", "TN", "TN", "TN", "TN", "MO", "MO", "MO", "MO", "MO",
+            "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO", "MO",
+            "MA", "MA", "MA", "MA", "MA", "MA", "MA", "MA", "MA", "MA",
+            "T", "T", "T", "T", "T", "T", "T", "T", "T", "T")
+  
+  cantidadManosEstrategia <- 0.0
+  
+  for(r in 1:repeticiones){
+    mazoTemporal <- mazo
+    manoTemporal <- c()
+    
+    for(i in 1:tamanhoMano){
+      indice <- sample(1:length(mazoTemporal), 1)
+      manoTemporal <- c(manoTemporal, mazoTemporal[indice])
+      mazoTemporal <- mazoTemporal[-indice]
+      
+    }
+    
+    if("TN" %in% manoTemporal){
+      if("TN" %in% manoTemporal[-match("TN", manoTemporal)]){
+        if("MO" %in% manoTemporal[tamanhoMano]){
+          cantidadManosEstrategia <- cantidadManosEstrategia + 1
+        }
+      }
+    }
+  }
+  
+  return(cantidadManosEstrategia/repeticiones)
+}
+
+probabilidadEstrategia(8, 10000)
+```
+
+
+**1.1.4** Si ahora consideramos una baraja mas compleja compuesta por 15 Monstruos debiles, 5 Monstruos fuertes, 5 Magias normales, 5 Magias de equipo, 3 Magias de campo, 5 Trampas normales y 2 Contra-Trampas. ?Cual es la probabilidad de obtener una mano (5 cartas) competitiva? considerar como no competitivo obtener en la primera mano: Monstruos fuertes, Magias de equipo o Trampas normales. Comente la dicultad de realizar este calculo de forma teorica.
+
+Realizar este calculo de manera teorica no es tan complicado como se esperaria, pues el problema
+esta asociado a la distribucion hypergeometrica:
+
+\begin{equation}
+  Pr(X=k) = \frac{{K\choose k} {N-K\choose n-k} }{ {N \choose n} }
+\end{equation}
+
+Donde:
+
+  + $N$ es el tamano de la poblacion (40, numero de cartas en el mazo)
+  
+  + $K$ es el numero de estados exitosos dentro de la poblacion (25, la cantidad de cartas que
+ no causan la no competitividad)
+ 
+  + $n$ es el numero de cartas a robar (5)
+  
+  + $k$ es el numero de exitos observados en la mano (5, la cantidad de cartas que no causan la no competitivdad que se espera robar)
+  
+Un calculo rapido nos entrega que la probabilidad obtener una mano competitiva es cercana a $0.08074$, similar al resultado que obtenemos a continuacion:
+
+```{r}
+probabilidadEstrategiaCompetitiva <- function (tamanhoMano, repeticiones){
+  mazo <- c("MOD", "MOD", "MOD", "MOD", "MOD", "MOD", "MOD", "MOD", "MOD", "MOD",
+            "MOD", "MOD", "MOD", "MOD", "MOD", "MOF", "MOF", "MOF", "MOF", "MOF",
+            "MAN", "MAN", "MAN", "MAN", "MAN", "MAE", "MAE", "MAE", "MAE", "MAE",
+            "MAC", "MAC", "MAC", "T", "T", "T", "T", "T", "CT", "CT")
+  
+  cantidadManosCompetitivas <- 0.0
+  
+  for(r in 1:repeticiones){
+    mazoTemporal <- mazo
+    manoTemporal <- c()
+    
+    for(i in 1:tamanhoMano){
+      indice <- sample(1:length(mazoTemporal), 1)
+      manoTemporal <- c(manoTemporal, mazoTemporal[indice])
+      mazoTemporal <- mazoTemporal[-indice]
+      
+    }
+    
+    if(!("MOF" %in% manoTemporal)){
+      if(!("MAE" %in% manoTemporal)){
+        if(!("T" %in% manoTemporal)){
+          cantidadManosCompetitivas <- cantidadManosCompetitivas + 1
+        }
+      }
+    }
+  }
+  
+  return(cantidadManosCompetitivas/repeticiones)
+}
+
+probabilidadEstrategiaCompetitiva(5, 10000)
+```
+
 
 ###1.2 Convergencia
 ```{r}
