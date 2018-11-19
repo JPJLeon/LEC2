@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ###1.1 Muestreo y Calculo
 **Enunciado:** En el juego de cartas Yu-Gi-Oh! una baraja se compone de 3 tipos de cartas: Monstruo, Magia y Trampa. Se cree que una baraja simple esta balanceada o es consistente si la baraja cumple con tener 40 cartas, de las cuales 20 son monstruos, 10 son magias y 10 son trampas. Se define como consistente a aquella baraja en la que la mano inicial posee un numero balanceado de cartas, en este caso, como minimo 1 carta de cada tipo.
 
-**1.1.1** Si en el primer turno el jugador saca 5 cartas de la baraja (sin reemplazo) ?Cual es la probabilidad de que su mano sea no consistente?
+**1.1.1** Si en el primer turno el jugador saca 5 cartas de la baraja (sin reemplazo) �Cual es la probabilidad de que su mano sea no consistente?
 
 ```{r}
 probabilidadNoConsistente <- function (tamanhoMano, repeticiones){
@@ -60,7 +60,7 @@ probabilidadNoConsistente(6, 10000)
 ```
 
 
-**1.1.3** En el juego, el jugador obtiene una mano inicial de 5 cartas y ademas roba al comienzo de cada turno (incluyendo el primero) 1 carta extra. El jugador cree tener muchos monstruos en su baraja, por lo que cambia 5 de estos por trampas, con la idea de poder defenderse con estas trampas por los primeros 2 turnos hasta obtener un monstruo. ?Cual es la probabilidad de que se cumpla esta estrategia del jugador? esto es, obtener 2 de estas trampas nuevas en la mano original o en los 2 robos consecutivos y luego obtener un monstruo en el tercer robo.
+**1.1.3** En el juego, el jugador obtiene una mano inicial de 5 cartas y ademas roba al comienzo de cada turno (incluyendo el primero) 1 carta extra. El jugador cree tener muchos monstruos en su baraja, por lo que cambia 5 de estos por trampas, con la idea de poder defenderse con estas trampas por los primeros 2 turnos hasta obtener un monstruo. �Cual es la probabilidad de que se cumpla esta estrategia del jugador? esto es, obtener 2 de estas trampas nuevas en la mano original o en los 2 robos consecutivos y luego obtener un monstruo en el tercer robo.
 
 ```{r}
 probabilidadEstrategia <- function (tamanhoMano, repeticiones){
@@ -98,7 +98,7 @@ probabilidadEstrategia(8, 10000)
 ```
 
 
-**1.1.4** Si ahora consideramos una baraja mas compleja compuesta por 15 Monstruos debiles, 5 Monstruos fuertes, 5 Magias normales, 5 Magias de equipo, 3 Magias de campo, 5 Trampas normales y 2 Contra-Trampas. ?Cual es la probabilidad de obtener una mano (5 cartas) competitiva? considerar como no competitivo obtener en la primera mano: Monstruos fuertes, Magias de equipo o Trampas normales. Comente la dicultad de realizar este calculo de forma teorica.
+**1.1.4** Si ahora consideramos una baraja mas compleja compuesta por 15 Monstruos debiles, 5 Monstruos fuertes, 5 Magias normales, 5 Magias de equipo, 3 Magias de campo, 5 Trampas normales y 2 Contra-Trampas. �Cual es la probabilidad de obtener una mano (5 cartas) competitiva? considerar como no competitivo obtener en la primera mano: Monstruos fuertes, Magias de equipo o Trampas normales. Comente la dicultad de realizar este calculo de forma teorica.
 
 Realizar este calculo de manera teorica no es tan complicado como se esperaria, pues el problema
 esta asociado a la distribucion hypergeometrica:
@@ -166,6 +166,10 @@ Muestre como converge la probabilidad de obtener una carta de monstruo al aument
 las muestras con un grafico. ¿Converge al valor teorico?
 Muestre como converge la probabilidad de obtener una mano inicial (5 cartas) con 5 monstruos. Muestre
 en el grafico el valor teorico de esta situacion. ¿Es correcta la convergencia mostrada en el grafico?
+
+**1.2.1** Muestre como converge la probabilidad de obtener una carta de monstruo al aumentar el tamaño de las muestras con un gráfico. ¿Converge al valor teorico?
+
+
 ```{r}
 #Pregunta 1.2.1
 library(ggplot2)
@@ -203,9 +207,14 @@ datos <- data.frame(indice,probs)
 ggplot(datos, aes(x=indice, y=probs)) + 
   geom_point() +
   geom_smooth(method=lm, se=FALSE) +
-  labs(title="Probabilidad de Robar un Carta de Monstruo",
+  labs(title="Probabilidad de Robar una Carta de Monstruo",
         x="Cantidad de Pruebas", y = "Probabilidad Obtenida")
 ```
+
+Considerando que la mitad de las cartas en el mazo son del tipo Monstruo, por lo que robar una 
+carta de tal tipo tiene una probabilidad teorica de $0.5$, podemos ver que se el experimento tiende a converger a dicho valor en el gr�fico.
+
+**1.2.2** Muestre como converge la probabilidad de obtener una mano inicial (5 cartas) con 5 monstruos. Muestre en el gráfico el valor teorico de esta situacion. ¿Es correcta la convergencia mostrada en el gráfico?
 
 ```{r}
 #Pregunta 1.2.2
@@ -256,12 +265,13 @@ ggplot(datos, aes(x=indice, y=probs)) +
   geom_smooth(method=lm, se=FALSE) +
   labs(title="Probabilidad de Robar 5 cartas de Monstruo",
        x="Cantidad de Pruebas", y = "Probabilidad Obtenida") +
-  annotate("text", x = 875, y = 0.075, label = "Probabilidad Teorica = 0.02356202")
+  annotate("text", x = 875, y = 0.075, label = "Probabilidad Teorica = 0.02356")
 
 
 
 ```
 
+Al igual que en **1.1.4**, siguiendo una distribucion hipergeometrica ($N=40$, $K=20$, $n=5$, $k=5$), tenemos que la probabilidad teorica es de $0.02356$. Observando el grafico podemos apreciar que el experimento tiende a una probabilidad similar. Un aumento en la cantidad de repeticiones podria llevar la probabilidad obtenida en el experimento a una mas cercana a la teorica.
 
 ###1.3 Bayes y Geometria
 **Enunciado:**Considere que un grupo de amigos se reunen a jugar tiro al blanco, cada uno con un arma distinta. Utilizan un dado de 4 caras para elegir quien realizara el siguiente disparo.
@@ -323,7 +333,8 @@ disparoBallesta <- function (numeroDisparos){
 
 
 ```
-Realizar una muestra de 1000 disparos.
+
+**1.3.1** Realizar una muestra de 1000 disparos.
 
 ```{r}
 #Pregunta 1.3.1
@@ -355,8 +366,10 @@ muestra1000 <- obtenerMuestra(1000)
 ```
 En el codigo anterior se utiliza una funcion que simula una muestra con una determinada cantidad de disparos (en este caso mil) y retorna un frame que muestra cada uno de los disparos enumerados, el tipo de arma y la distancia que tuvo el disparo del centro.
 
+ En el codigo anterior se utiliza una funcion que simula una muestra con una determinada cantidad de disparos (en este caso mil) y retorna un frame que muestra cada uno de los disparos enumerados, el tipo de arma y la distancia que tuvo el disparo del centro.
+ 
+**1.3.2** ¿Cual es la probabilidad de que un disparo caiga de en el blanco (circulo centrado en 0,0 con radio 1[cm]) dado que el disparo fue hecho por el jugador con el rifle? 
 
-¿Cual es la probabilidad de que un disparo caiga de en el blanco (circulo centrado en 0,0 con radio 1[cm]) dado que el disparo fue hecho por el jugador con el rifle? 
 
 ```{r}
 #Pregunta 1.3.2
@@ -380,7 +393,10 @@ La probabilidad se obtuvo de una muestra de 1000 disparos, analizando solo aquel
 y un radio menor o igual a 1 luego el calculo de la probabilidad resulta de la cantidad de aciertos (con radio menor o igual a 1) y los disparos totales hechos con rifle.
 
  
-¿Cual es la probabilidad de que el disparo fuera hecho por el jugador con slingshot dado que el disparo
+�Cual es la probabilidad de que el disparo fuera hecho por el jugador con slingshot dado que el disparo
+acerto en el blanco?
+
+**1.3.3** �Cual es la probabilidad de que el disparo fuera hecho por el jugador con slingshot dado que el disparo
 acerto en el blanco?
 
 
@@ -403,7 +419,10 @@ Se calcula esta vez de la cantidad de slingshot acertados sobre la cantidad de d
 de esta forma tenemos la probabilidad que un disparo que haya dado en el blanco haya venido de un slingshot. 
 
 ¿Cual es la probabilidad de que el disparo fuera hecho por el jugador con arco y flechas dado que el
+
+**1.3.4** ¿Cual es la probabilidad de que el disparo fuera hecho por el jugador con arco y flechas dado que el
 disparo fallo?
+
 ```{r}
 #Pregunta 1.3.4
 #muestra1000 con los 1000 datos a usar
@@ -421,8 +440,8 @@ probabilidadCondicionada
 ```
 Se obtiene practicamente igual que el anterior solo que ahora buscamos los casos fallidos, pero la idea es la misma se calcula de la division de los disparos con arco fallidos y la cantidad de disparos totales, asi obtenemos la probabilidad que un disparo fallido venga de un arco o incluso la proporcion de los disparos fallidos con arco sobre la totalidad de estos. 
 
+**1.3.5** ¿Cual es la probabilidad de acertar un disparo dado que no se usa un arma de fuego?
 
-¿Cual es la probabilidad de acertar un disparo dado que no se usa un arma de fuego?
 ```{r}
 #Pregunta 1.3.5
 #muestra1000 con los 1000 datos a usar
